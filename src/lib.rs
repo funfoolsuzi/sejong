@@ -1,4 +1,7 @@
 
-pub mod buffer;
-pub mod syllable;
-pub mod byte;
+mod buffer;
+mod syllable;
+mod byte;
+
+pub use byte::Byte;
+pub use buffer::Buffer;
