@@ -1,3 +1,4 @@
+use std::convert::TryFrom;
 
 #[derive(Clone, Copy)]
 #[repr(u8)]
@@ -41,7 +42,7 @@ pub enum Byte {
     K = 0x7a, // z
 }
 
-impl std::convert::TryFrom<u8> for Byte {
+impl TryFrom<u8> for Byte {
     type Error = u8;
     fn try_from(byte: u8) -> Result<Self, Self::Error> {
         if byte == 0x8 ||
@@ -56,7 +57,7 @@ impl std::convert::TryFrom<u8> for Byte {
 }
 
 
-impl std::convert::TryFrom<char> for Byte {
+impl TryFrom<char> for Byte {
     type Error = char;
     fn try_from(c: char) -> Result<Self, Self::Error> {
         if c.len_utf8() != 1 {
@@ -88,16 +89,5 @@ impl Byte {
             Self::J | Self::T | Self::K => true,
             _ => false,
         }
-    }
-}
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_into() {
-        use std::convert::TryFrom;
-        
-        let b = Byte::try_from(100u8);
     }
 }

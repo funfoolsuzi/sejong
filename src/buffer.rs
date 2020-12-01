@@ -1,5 +1,6 @@
 use crate::syllable::Syllable;
 use crate::byte::Byte;
+use std::convert::TryInto;
 
 const DEFAULT_BUFFER_CAP: usize = 100;
 
@@ -11,7 +12,29 @@ impl Buffer {
         Self(Vec::with_capacity(cap))
     }
 
-    pub fn put(&mut self, b: Byte) {
+    pub fn put<T>(&mut self, byte_candidate: T) -> Option<T> where T:TryInto<Byte, Error = T> {
+        match byte_candidate.try_into() {
+            Ok(byte) => {
+                self.put_byte(byte);
+                None
+            },
+            Err(returned) => Some(returned),
+        }
+    }
+
+    pub fn out(&mut self) -> String {
+        let mut result = String::with_capacity(self.0.len());
+        self.0.reverse();
+        loop {
+            match self.0.pop() {
+                Some(syl) => result.push(syl.into()),
+                None => break,
+            }
+        }
+        result
+    }
+
+    fn put_byte(&mut self, b: Byte) {
         if let Some(last) = self.0.last_mut() {
             match last.put(b) {
                 Some(b) => {
@@ -30,18 +53,6 @@ impl Buffer {
         if let Some(syl) = Syllable::new_with_first(b) {
             self.0.push(syl);
         }
-    }
-
-    pub fn out(&mut self) -> String {
-        let mut result = String::with_capacity(self.0.len());
-        self.0.reverse();
-        loop {
-            match self.0.pop() {
-                Some(syl) => result.push(syl.into()),
-                None => break,
-            }
-        }
-        result
     }
 }
 
@@ -68,18 +79,18 @@ mod tests {
     #[test]
     fn test_buffer() {
         let mut buffer = Buffer::default();
-        buffer.put(Byte::NG);
-        buffer.put(Byte::A);
-        buffer.put(Byte::N);
-        buffer.put(Byte::N);
-        buffer.put(Byte::YEO);
-        buffer.put(Byte::NG);
-        buffer.put(Byte::H);
-        buffer.put(Byte::A);
-        buffer.put(Byte::S);
-        buffer.put(Byte::E);
-        buffer.put(Byte::NG);
-        buffer.put(Byte::YEO);
+        buffer.put(Byte::NG as u8);
+        buffer.put(Byte::A as u8);
+        buffer.put(Byte::N as u8);
+        buffer.put(Byte::N as u8);
+        buffer.put(Byte::YEO as u8);
+        buffer.put(Byte::NG as u8);
+        buffer.put(Byte::H as u8);
+        buffer.put(Byte::A as u8);
+        buffer.put(Byte::S as u8);
+        buffer.put(Byte::E as u8);
+        buffer.put(Byte::NG as u8);
+        buffer.put(Byte::YEO as u8);
 
         assert_eq!(5, buffer.0.len());
 
