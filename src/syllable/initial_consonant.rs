@@ -1,6 +1,7 @@
 
-use super::Byte;
+use super::{Byte, FinalConsonant};
 
+#[derive(Clone)]
 #[repr(u8)]
 pub (super) enum InitialConsonant {
     G, // ㄱ
@@ -25,15 +26,6 @@ pub (super) enum InitialConsonant {
     Invalid,
 }
 
-impl From<u8> for InitialConsonant {
-    fn from(byte: u8) -> Self {
-        if byte > Self::H as u8 {
-            return Self::Invalid
-        }
-        unsafe { std::mem::transmute(byte) }
-    }
-}
-
 impl From<Byte> for InitialConsonant {
     fn from(b: Byte) -> Self {
         match b {
@@ -56,6 +48,30 @@ impl From<Byte> for InitialConsonant {
             Byte::T => Self::T,
             Byte::P => Self::P,
             Byte::H => Self::H,
+            _ => Self::Invalid,
+        }
+    }
+}
+
+impl From<FinalConsonant> for InitialConsonant {
+    fn from(fc: FinalConsonant) -> Self {
+        match fc {
+            FinalConsonant::G => Self::G,
+            FinalConsonant::KK => Self::KK,
+            FinalConsonant::N => Self::N,
+            FinalConsonant::D => Self::D,
+            FinalConsonant::L => Self::R,
+            FinalConsonant::M => Self::M,
+            FinalConsonant::B => Self::B,
+            FinalConsonant::S => Self::S,
+            FinalConsonant::SS => Self::SS,
+            FinalConsonant::NG => Self::NG,
+            FinalConsonant::J => Self::J,
+            FinalConsonant::CH => Self::CH,
+            FinalConsonant::K => Self::K,
+            FinalConsonant::T => Self::T,
+            FinalConsonant::P => Self::P,
+            FinalConsonant::H => Self::H,
             _ => Self::Invalid,
         }
     }

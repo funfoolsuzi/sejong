@@ -1,5 +1,6 @@
 use super::Byte;
 
+#[derive(Clone)]
 #[repr(u8)]
 pub (super) enum FinalConsonant {
     None,
@@ -33,15 +34,6 @@ pub (super) enum FinalConsonant {
     Invalid
 }
 
-impl From<u8> for  FinalConsonant {
-    fn from(byte: u8) -> Self {
-        if byte > Self::H as u8 {
-            return Self::Invalid
-        }
-        unsafe { std::mem::transmute(byte) }
-    }
-}
-
 impl From<Byte> for FinalConsonant {
     fn from(b: Byte) -> Self {
         match b {
@@ -69,5 +61,44 @@ impl From<Byte> for FinalConsonant {
 impl Default for FinalConsonant {
     fn default() -> Self {
         Self::None
+    }
+}
+
+impl FinalConsonant {
+    pub fn add(&self, b: Byte) -> Self {
+        match self {
+            Self::G => {
+                match b {
+                    Byte::S => Self::GS,
+                    _ => Self::Invalid,
+                }
+            },
+            Self::N => {
+                match b {
+                    Byte::J => Self::NJ,
+                    Byte::H => Self::NH,
+                    _ => Self::Invalid,
+                }
+            },
+            Self::L => {
+                match b {
+                    Byte::G => Self::LG,
+                    Byte::M => Self::LM,
+                    Byte::B => Self::LB,
+                    Byte::S => Self::LS,
+                    Byte::T => Self::LT,
+                    Byte::P => Self::LP,
+                    Byte::H => Self::LH,
+                    _ => Self::Invalid,
+                }
+            },
+            Self::B => {
+                match b {
+                    Byte::S => Self::BS,
+                    _ => Self::Invalid,
+                }
+            }
+            _ => Self::Invalid
+        }
     }
 }

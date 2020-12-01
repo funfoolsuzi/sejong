@@ -1,4 +1,5 @@
 
+#[derive(Clone, Copy)]
 #[repr(u8)]
 pub enum Byte {
     Invalid = 0x0,

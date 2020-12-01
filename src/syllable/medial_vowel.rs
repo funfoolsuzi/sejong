@@ -1,5 +1,6 @@
 use super::Byte;
 
+#[derive(Clone)]
 #[repr(u8)]
 pub (super) enum MedialVowel {
     A, // ㅏ
@@ -24,15 +25,6 @@ pub (super) enum MedialVowel {
     YI, // ㅢ
     I, // ㅣ
     Invalid
-}
-
-impl From<u8> for MedialVowel {
-    fn from(byte: u8) -> Self {
-        if byte > Self::I as u8 {
-            return Self::Invalid
-        }
-        unsafe { std::mem::transmute(byte) }
-    }
 }
 
 impl From<Byte> for MedialVowel {
@@ -60,5 +52,35 @@ impl From<Byte> for MedialVowel {
 impl Default for MedialVowel {
     fn default() -> Self {
         Self::A
+    }
+}
+
+impl MedialVowel {
+    pub fn add(&self, b: Byte) -> Self {
+        match self {
+            Self::O => {
+                match b {
+                    Byte::A => Self::WA,
+                    Byte::AE => Self::WAE,
+                    Byte::I => Self::OE,
+                    _ => Self::Invalid,
+                }
+            },
+            Self::U => {
+                match b {
+                    Byte::EO => Self::WO,
+                    Byte::E => Self::WE,
+                    Byte::I => Self::WI,
+                    _ => Self::Invalid,
+                }
+            }
+            Self::EU => {
+                match b {
+                    Byte::I => Self::YI,
+                    _ => Self::Invalid,
+                }
+            }
+            _ => Self::Invalid
+        }
     }
 }
