@@ -1,7 +1,7 @@
 
 use super::*;
 
-#[derive(Clone, PartialEq)]
+#[derive(Clone, Copy, PartialEq)]
 #[repr(u8)]
 pub enum Status {
     Empty,
@@ -16,7 +16,7 @@ impl Default for Status {
     }
 }
 
-#[derive(Default, Clone)]
+#[derive(Default, Clone, Copy)]
 pub struct Syllable {
     initial_consonant: InitialConsonant,
     medial_vowel: MedialVowel,

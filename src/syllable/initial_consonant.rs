@@ -1,7 +1,7 @@
 
 use super::{Byte, FinalConsonant};
 
-#[derive(Clone)]
+#[derive(Clone, Copy)]
 #[repr(u8)]
 pub (super) enum InitialConsonant {
     G, // ㄱ

@@ -34,6 +34,14 @@ impl Buffer {
         result
     }
 
+    pub fn to_string(&self) -> String {
+        let mut result = String::with_capacity(self.0.len());
+        for syl in &self.0 {
+            result.push((*syl).into());
+        }
+        result
+    }
+
     fn put_byte(&mut self, b: Byte) {
         if let Some(last) = self.0.last_mut() {
             match last.put(b) {
@@ -58,11 +66,7 @@ impl Buffer {
 
 impl Into<String> for Buffer {
     fn into(self) -> String {
-        let mut result = String::with_capacity(self.0.len());
-        for syl in self.0 {
-            result.push(syl.into());
-        }
-        result
+        self.to_string()
     }
 }
 
