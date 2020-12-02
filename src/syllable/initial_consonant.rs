@@ -3,7 +3,7 @@ use super::{Byte, FinalConsonant};
 
 #[derive(Clone, Copy, PartialEq)]
 #[repr(u8)]
-pub (super) enum InitialConsonant {
+pub (crate) enum InitialConsonant {
     G, // ㄱ
     KK, // ㄲ
     N, // ㄴ

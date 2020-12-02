@@ -1,8 +1,8 @@
 use super::Byte;
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, PartialEq)]
 #[repr(u8)]
-pub (super) enum MedialVowel {
+pub (crate) enum MedialVowel {
     A, // ㅏ
     AE, // ㅐ
     YA, // ㅑ

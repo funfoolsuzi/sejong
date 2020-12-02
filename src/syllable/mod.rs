@@ -9,4 +9,4 @@ use medial_vowel::*;
 use final_consonant::*;
 use super::byte::*;
 
-pub use syllable::Syllable;
+pub (crate) use syllable::Syllable;

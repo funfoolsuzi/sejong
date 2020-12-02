@@ -58,7 +58,7 @@ impl Buffer {
             };
         }
 
-        if let Some(syl) = Syllable::new_with_first(b) {
+        if let Some(syl) = Syllable::new(b) {
             self.0.push(syl);
         }
     }
