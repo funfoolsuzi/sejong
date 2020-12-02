@@ -1,4 +1,5 @@
 use super::Byte;
+use std::convert::{TryFrom};
 
 #[derive(Clone, Copy, PartialEq, Debug)]
 #[repr(u8)]
@@ -24,27 +25,27 @@ pub (crate) enum MedialVowel {
     EU, // ㅡ
     YI, // ㅢ
     I, // ㅣ
-    Invalid
 }
 
-impl From<Byte> for MedialVowel {
-    fn from(b: Byte) -> Self {
+impl TryFrom<Byte> for MedialVowel {
+    type Error = Byte;
+    fn try_from(b: Byte) -> Result<Self, Self::Error> {
         match b {
-            Byte::A => Self::A,
-            Byte::AE => Self::AE,
-            Byte::YA => Self::YA,
-            Byte::YAE => Self::YAE,
-            Byte::EO => Self::EO,
-            Byte::E => Self::E,
-            Byte::YEO => Self::YEO,
-            Byte::YE => Self::YE,
-            Byte::O => Self::O,
-            Byte::YO => Self::YO,
-            Byte::U => Self::U,
-            Byte::YU => Self::YU,
-            Byte::EU => Self::EU,
-            Byte::I => Self::I,
-            _ => Self::Invalid,
+            Byte::A => Ok(Self::A),
+            Byte::AE => Ok(Self::AE),
+            Byte::YA => Ok(Self::YA),
+            Byte::YAE => Ok(Self::YAE),
+            Byte::EO => Ok(Self::EO),
+            Byte::E => Ok(Self::E),
+            Byte::YEO => Ok(Self::YEO),
+            Byte::YE => Ok(Self::YE),
+            Byte::O => Ok(Self::O),
+            Byte::YO => Ok(Self::YO),
+            Byte::U => Ok(Self::U),
+            Byte::YU => Ok(Self::YU),
+            Byte::EU => Ok(Self::EU),
+            Byte::I => Ok(Self::I),
+            _ => Err(b),
         }
     }
 }
@@ -57,7 +58,6 @@ impl Default for MedialVowel {
 
 impl Into<char> for MedialVowel {
     fn into(self) -> char {
-        assert!(self != Self::Invalid);
         unsafe {
             let x = std::char::from_u32_unchecked(self as u32 + 0x314f);
             x
@@ -65,32 +65,33 @@ impl Into<char> for MedialVowel {
     }
 }
 
-impl MedialVowel {
-    pub fn add(&self, b: Byte) -> Self {
-        match self {
+impl TryFrom<(Self, Byte)> for MedialVowel {
+    type Error = (Self, Byte);
+    fn try_from(input: (Self, Byte)) -> Result<Self, Self::Error> {
+        match input.0 {
             Self::O => {
-                match b {
-                    Byte::A => Self::WA,
-                    Byte::AE => Self::WAE,
-                    Byte::I => Self::OE,
-                    _ => Self::Invalid,
+                match input.1 {
+                    Byte::A => Ok(Self::WA),
+                    Byte::AE => Ok(Self::WAE),
+                    Byte::I => Ok(Self::OE),
+                    _ => Err(input),
                 }
             },
             Self::U => {
-                match b {
-                    Byte::EO => Self::WO,
-                    Byte::E => Self::WE,
-                    Byte::I => Self::WI,
-                    _ => Self::Invalid,
+                match input.1 {
+                    Byte::EO => Ok(Self::WO),
+                    Byte::E => Ok(Self::WE),
+                    Byte::I => Ok(Self::WI),
+                    _ => Err(input),
                 }
             }
             Self::EU => {
-                match b {
-                    Byte::I => Self::YI,
-                    _ => Self::Invalid,
+                match input.1 {
+                    Byte::I => Ok(Self::YI),
+                    _ => Err(input),
                 }
             }
-            _ => Self::Invalid
+            _ => Err(input)
         }
     }
 }
