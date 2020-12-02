@@ -26,15 +26,21 @@ pub struct Syllable {
 
 impl Into<char> for Syllable {
     fn into(self) -> char {
-        // the formula comes from this Wikipedia page: 
-        // https://en.wikipedia.org/wiki/Korean_language_and_computers#Hangul_Syllables_block
-        unsafe {
-            std::char::from_u32_unchecked(
-                (self.initial_consonant as u32) * 588 +
-                (self.medial_vowel as u32) * 28 +
-                (self.final_consonant as u32) +
-                44032
-            )
+        match self.status {
+            Status::Empty => '\0',
+            Status::Initial => self.initial_consonant.into(),
+            Status::Medial | Status::Final => {
+                // the formula comes from this Wikipedia page: 
+                // https://en.wikipedia.org/wiki/Korean_language_and_computers#Hangul_Syllables_block
+                unsafe {
+                    std::char::from_u32_unchecked(
+                        (self.initial_consonant as u32) * 588 +
+                        (self.medial_vowel as u32) * 28 +
+                        (self.final_consonant as u32) +
+                        44032
+                    )
+                }                
+            }
         }
     }
 }

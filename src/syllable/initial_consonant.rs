@@ -1,7 +1,7 @@
 
 use super::{Byte, FinalConsonant};
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, PartialEq)]
 #[repr(u8)]
 pub (super) enum InitialConsonant {
     G, // ㄱ
@@ -73,6 +73,15 @@ impl From<FinalConsonant> for InitialConsonant {
             FinalConsonant::P => Self::P,
             FinalConsonant::H => Self::H,
             _ => Self::Invalid,
+        }
+    }
+}
+
+impl Into<char> for InitialConsonant {
+    fn into(self) -> char {
+        assert!(self != Self::Invalid);
+        unsafe {
+            std::char::from_u32_unchecked(self as u32 + 0x1100)
         }
     }
 }
