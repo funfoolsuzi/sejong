@@ -1,6 +1,6 @@
 
 use super::*;
-use std::convert::TryInto;
+use std::convert::{TryInto, TryFrom};
 
 #[derive(Clone, Copy, Debug)]
 pub (crate) enum Syllable {
@@ -13,8 +13,7 @@ pub (crate) enum Syllable {
 
 impl Syllable {
     pub fn new(byte: Byte) -> Option<Self> {
-        let ic = InitialConsonant::from(byte);
-        if ic != InitialConsonant::Invalid {
+        if let Ok(ic) = InitialConsonant::try_from(byte) {
             return Some(Self::Initial(ic))
         }
         let vo = MedialVowel::from(byte);
@@ -49,8 +48,8 @@ impl Syllable {
         }
         match self {
             Self::Final(ic, mv, fc) => {
-                match InitialConsonant::from(*fc) {
-                    InitialConsonant::Invalid => {
+                match InitialConsonant::try_from(*fc) {
+                    Err(_) => {
                         let result: Result<(FinalConsonant, InitialConsonant), FinalConsonant> = (*fc).try_into();
                         match result {
                             Ok(consonants) => {
@@ -64,7 +63,7 @@ impl Syllable {
                             Err(_) => Err(byte),
                         }
                     }
-                    new_ic => {
+                    Ok(new_ic) => {
                         let mut splitted = Self::Initial(new_ic);
                         if let Some(byte) = splitted.put(byte) {
                             return Err(byte)
@@ -93,10 +92,7 @@ impl Syllable {
             return Some(Self::Medial(*ic, added))
         }
         let fc = FinalConsonant::from(byte);
-        match ic {
-            InitialConsonant::Invalid => None,
-            _ => Some(Self::Final(*ic, *mv, fc))
-        }
+        Some(Self::Final(*ic, *mv, fc))
     }
 
     fn handle_final(ic: &InitialConsonant, mv: &MedialVowel, fc: &FinalConsonant, byte: Byte) -> Option<Self> {
