@@ -19,8 +19,7 @@ impl Syllable {
         if let Ok(vo) = MedialVowel::try_from(byte) {
             return Some(Self::VowelOnly(vo))
         }
-        let fc = FinalConsonant::from(byte);
-        if fc != FinalConsonant::Invalid {
+        if let Ok(fc) = FinalConsonant::try_from(byte) {
             return Some(Self::FinalConsonantOnly(fc))
         }
         None
@@ -88,14 +87,17 @@ impl Syllable {
         if let Ok(added) = MedialVowel::try_from((*mv, byte)) {
             return Some(Self::Medial(*ic, added))
         }
-        let fc = FinalConsonant::from(byte);
-        Some(Self::Final(*ic, *mv, fc))
+        match FinalConsonant::try_from(byte) {
+            Ok(fc) => Some(Self::Final(*ic, *mv, fc)),
+            Err(_) => None,
+        }
+        
     }
 
     fn handle_final(ic: &InitialConsonant, mv: &MedialVowel, fc: &FinalConsonant, byte: Byte) -> Option<Self> {
-        match fc.add(byte) {
-            FinalConsonant::Invalid => None,
-            added => Some(Self::Final(*ic, *mv, added)),
+        match FinalConsonant::try_from((*fc, byte)) {
+            Ok(new) => Some(Self::Final(*ic, *mv, new)),
+            Err(_) => None,
         }
     }
 }

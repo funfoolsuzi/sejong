@@ -1,4 +1,5 @@
 use super::{Byte, InitialConsonant};
+use std::convert::{TryFrom, TryInto};
 
 #[derive(Clone, Copy, PartialEq, Debug)]
 #[repr(u8)]
@@ -31,29 +32,69 @@ pub (crate) enum FinalConsonant {
     T, // ㅌ
     P, // ㅍ
     H, // ㅎ
-    Invalid
 }
 
-impl From<Byte> for FinalConsonant {
-    fn from(b: Byte) -> Self {
+impl TryFrom<Byte> for FinalConsonant {
+    type Error = Byte;
+    fn try_from(b: Byte) -> Result<Self, Self::Error> {
         match b {
-            Byte::G => Self::G,
-            Byte::KK => Self::KK,
-            Byte::N => Self::N,
-            Byte::D => Self::D,
-            Byte::R => Self::L,
-            Byte::M => Self::M,
-            Byte::B => Self::B,
-            Byte::S => Self::S,
-            Byte::SS => Self::SS,
-            Byte::NG => Self::NG,
-            Byte::J => Self::J,
-            Byte::CH => Self::CH,
-            Byte::K => Self::K,
-            Byte::T => Self::T,
-            Byte::P => Self::P,
-            Byte::H => Self::H,
-            _ => Self::Invalid,
+            Byte::G => Ok(Self::G),
+            Byte::KK => Ok(Self::KK),
+            Byte::N => Ok(Self::N),
+            Byte::D => Ok(Self::D),
+            Byte::R => Ok(Self::L),
+            Byte::M => Ok(Self::M),
+            Byte::B => Ok(Self::B),
+            Byte::S => Ok(Self::S),
+            Byte::SS => Ok(Self::SS),
+            Byte::NG => Ok(Self::NG),
+            Byte::J => Ok(Self::J),
+            Byte::CH => Ok(Self::CH),
+            Byte::K => Ok(Self::K),
+            Byte::T => Ok(Self::T),
+            Byte::P => Ok(Self::P),
+            Byte::H => Ok(Self::H),
+            _ => Err(b),
+        }
+    }
+}
+
+impl TryFrom<(Self, Byte)> for FinalConsonant {
+    type Error = (Self, Byte);
+    fn try_from(input: (Self, Byte)) -> Result<Self, Self::Error> {
+        match input.0 {
+            Self::G => {
+                match input.1 {
+                    Byte::S => Ok(Self::GS),
+                    _ => Err(input),
+                }
+            },
+            Self::N => {
+                match input.1 {
+                    Byte::J => Ok(Self::NJ),
+                    Byte::H => Ok(Self::NH),
+                    _ => Err(input),
+                }
+            },
+            Self::L => {
+                match input.1 {
+                    Byte::G => Ok(Self::LG),
+                    Byte::M => Ok(Self::LM),
+                    Byte::B => Ok(Self::LB),
+                    Byte::S => Ok(Self::LS),
+                    Byte::T => Ok(Self::LT),
+                    Byte::P => Ok(Self::LP),
+                    Byte::H => Ok(Self::LH),
+                    _ => Err(input),
+                }
+            },
+            Self::B => {
+                match input.1 {
+                    Byte::S => Ok(Self::BS),
+                    _ => Err(input),
+                }
+            }
+            _ => Err(input)
         }
     }
 }
@@ -64,46 +105,7 @@ impl Default for FinalConsonant {
     }
 }
 
-impl FinalConsonant {
-    pub fn add(&self, b: Byte) -> Self {
-        match self {
-            Self::G => {
-                match b {
-                    Byte::S => Self::GS,
-                    _ => Self::Invalid,
-                }
-            },
-            Self::N => {
-                match b {
-                    Byte::J => Self::NJ,
-                    Byte::H => Self::NH,
-                    _ => Self::Invalid,
-                }
-            },
-            Self::L => {
-                match b {
-                    Byte::G => Self::LG,
-                    Byte::M => Self::LM,
-                    Byte::B => Self::LB,
-                    Byte::S => Self::LS,
-                    Byte::T => Self::LT,
-                    Byte::P => Self::LP,
-                    Byte::H => Self::LH,
-                    _ => Self::Invalid,
-                }
-            },
-            Self::B => {
-                match b {
-                    Byte::S => Self::BS,
-                    _ => Self::Invalid,
-                }
-            }
-            _ => Self::Invalid
-        }
-    }
-}
-
-impl std::convert::TryInto<(Self, InitialConsonant)> for FinalConsonant {
+impl TryInto<(Self, InitialConsonant)> for FinalConsonant {
     type Error = Self;
     fn try_into(self) -> Result<(Self, InitialConsonant), Self> {
         match self {
