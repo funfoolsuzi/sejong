@@ -12,7 +12,7 @@ pub (crate) enum InitialConsonant {
     R, // ㄹ
     M, // ㅁ
     B, // ㅂ
-    PP, // ㅃ 
+    PP, // ㅃ
     S, // ㅅ
     SS, // ㅆ
     NG, // ㅇ

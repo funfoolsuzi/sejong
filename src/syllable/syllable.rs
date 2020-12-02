@@ -1,5 +1,6 @@
 
 use super::*;
+use std::convert::TryInto;
 
 #[derive(Clone, Copy, Debug)]
 pub (crate) enum Syllable {
@@ -49,7 +50,20 @@ impl Syllable {
         match self {
             Self::Final(ic, mv, fc) => {
                 match InitialConsonant::from(*fc) {
-                    InitialConsonant::Invalid => Err(byte),
+                    InitialConsonant::Invalid => {
+                        let result: Result<(FinalConsonant, InitialConsonant), FinalConsonant> = (*fc).try_into();
+                        match result {
+                            Ok(consonants) => {
+                                let mut splitted = Self::Initial(consonants.1);
+                                if let Some(byte) = splitted.put(byte) {
+                                    return Err(byte)
+                                }
+                                *self = Self::Final(*ic, *mv, consonants.0);
+                                Ok(splitted)
+                            },
+                            Err(_) => Err(byte),
+                        }
+                    }
                     new_ic => {
                         let mut splitted = Self::Initial(new_ic);
                         if let Some(byte) = splitted.put(byte) {

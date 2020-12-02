@@ -127,4 +127,43 @@ mod tests {
 
         assert_eq!("ㅑㅑㅏㅏㅡ", buffer.to_string());
     }
+
+    #[test]
+    fn test_special_consonant() {
+        let mut buffer = Buffer::default();
+        buffer.put(Byte::N as u8);
+        buffer.put(Byte::J as u8);
+
+        assert_eq!("ㄴㅈ", buffer.to_string());
+    }
+
+
+    #[test]
+    fn test_syllable_with_four_jamol() {
+        let mut buffer = Buffer::default();
+        buffer.put(Byte::NG as u8);
+        buffer.put(Byte::EU as u8);
+        buffer.put(Byte::N as u8);
+        buffer.put(Byte::J as u8);
+        buffer.put(Byte::NG as u8);
+        buffer.put(Byte::EU as u8);
+        buffer.put(Byte::N as u8);
+        buffer.put(Byte::J as u8);
+
+        assert_eq!("읁읁", buffer.to_string())
+    }
+
+    #[test]
+    fn test_syllable_splitting_with_two_part_final_consonant() {
+        let mut buffer = Buffer::default();
+        buffer.put(Byte::NG as u8);
+        buffer.put(Byte::EU as u8);
+        buffer.put(Byte::N as u8);
+        buffer.put(Byte::J as u8);
+        buffer.put(Byte::EU as u8);
+        buffer.put(Byte::N as u8);
+        buffer.put(Byte::J as u8);
+
+        assert_eq!("은즍", buffer.to_string())
+    }
 }

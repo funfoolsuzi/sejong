@@ -1,4 +1,4 @@
-use super::Byte;
+use super::{Byte, InitialConsonant};
 
 #[derive(Clone, Copy, PartialEq, Debug)]
 #[repr(u8)]
@@ -99,6 +99,26 @@ impl FinalConsonant {
                 }
             }
             _ => Self::Invalid
+        }
+    }
+}
+
+impl std::convert::TryInto<(Self, InitialConsonant)> for FinalConsonant {
+    type Error = Self;
+    fn try_into(self) -> Result<(Self, InitialConsonant), Self> {
+        match self {
+            Self::GS => Ok((Self::G, InitialConsonant::S)),
+            Self::NJ => Ok((Self::N, InitialConsonant::J)),
+            Self::NH => Ok((Self::N, InitialConsonant::H)),
+            Self::LG => Ok((Self::L, InitialConsonant::G)),
+            Self::LM => Ok((Self::L, InitialConsonant::M)),
+            Self::LB => Ok((Self::L, InitialConsonant::B)),
+            Self::LS => Ok((Self::L, InitialConsonant::S)),
+            Self::LT => Ok((Self::L, InitialConsonant::T)),
+            Self::LP => Ok((Self::L, InitialConsonant::P)),
+            Self::LH => Ok((Self::L, InitialConsonant::H)),
+            Self::BS => Ok((Self::B, InitialConsonant::S)),
+            _ => Err(self),
         }
     }
 }
