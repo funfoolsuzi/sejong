@@ -1,7 +1,7 @@
 
 use super::{Byte, FinalConsonant};
 
-#[derive(Clone, Copy, PartialEq)]
+#[derive(Clone, Copy, PartialEq, Debug)]
 #[repr(u8)]
 pub (crate) enum InitialConsonant {
     G, // ㄱ
@@ -79,9 +79,29 @@ impl From<FinalConsonant> for InitialConsonant {
 
 impl Into<char> for InitialConsonant {
     fn into(self) -> char {
-        assert!(self != Self::Invalid);
-        unsafe {
-            std::char::from_u32_unchecked(self as u32 + 0x1100)
+        // Hangul Compability Jamo reference:
+        // https://en.wikipedia.org/wiki/Hangul_Compatibility_Jamo
+        match self {
+            Self::G => 'ㄱ',
+            Self::KK => 'ㄲ',
+            Self::N => 'ㄴ',
+            Self::D => 'ㄷ',
+            Self::TT => 'ㄸ',
+            Self::R => 'ㄹ',
+            Self::M => 'ㅁ',
+            Self::B => 'ㅂ',
+            Self::PP => 'ㅃ', 
+            Self::S => 'ㅅ',
+            Self::SS => 'ㅆ',
+            Self::NG => 'ㅇ',
+            Self::J => 'ㅈ',
+            Self::JJ => 'ㅉ',
+            Self::CH => 'ㅊ',
+            Self::K => 'ㅋ',
+            Self::T => 'ㅌ',
+            Self::P => 'ㅍ',
+            Self::H => 'ㅎ',
+            Self::Invalid => panic!("invalid initial consonant"),
         }
     }
 }

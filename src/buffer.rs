@@ -103,4 +103,28 @@ mod tests {
 
         assert_eq!("안녕하세여", buffer.out())
     }
+
+    #[test]
+    fn test_consecutive_consonants() {
+        let mut buffer = Buffer::default();
+        buffer.put(Byte::NG as u8);
+        buffer.put(Byte::NG as u8);
+        buffer.put(Byte::NG as u8);
+        buffer.put(Byte::G as u8);
+        buffer.put(Byte::K as u8);
+
+        assert_eq!("ㅇㅇㅇㄱㅋ", buffer.to_string())
+    }
+
+    #[test]
+    fn test_consecutive_vowels() {
+        let mut buffer = Buffer::default();
+        buffer.put(Byte::YA as u8);
+        buffer.put(Byte::YA as u8);
+        buffer.put(Byte::A as u8);
+        buffer.put(Byte::A as u8);
+        buffer.put(Byte::EU as u8);
+
+        assert_eq!("ㅑㅑㅏㅏㅡ", buffer.to_string());
+    }
 }

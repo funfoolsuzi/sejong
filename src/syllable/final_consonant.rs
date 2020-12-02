@@ -1,6 +1,6 @@
 use super::Byte;
 
-#[derive(Clone, Copy, PartialEq)]
+#[derive(Clone, Copy, PartialEq, Debug)]
 #[repr(u8)]
 pub (crate) enum FinalConsonant {
     None,

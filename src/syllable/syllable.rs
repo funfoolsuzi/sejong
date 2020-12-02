@@ -1,7 +1,7 @@
 
 use super::*;
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, Debug)]
 pub (crate) enum Syllable {
     Initial(InitialConsonant),
     Medial(InitialConsonant, MedialVowel),
@@ -100,6 +100,7 @@ impl Into<char> for Syllable {
             Self::Initial(ic) => ic.into(),
             Self::Medial(ic, mv) => calculate_syllable_u32(ic as u32, mv as u32, 0),
             Self::Final(ic, mv, fc) => calculate_syllable_u32(ic as u32, mv as u32, fc as u32),
+            Self::VowelOnly(v) => v.into(),
             _ => '\0', // TODO: needs to handle other case
         }
     }
@@ -125,5 +126,11 @@ mod tests {
         
         let char1: char = syllable1.into();
         assert_eq!(char1, '만');
+    }
+
+    #[test]
+    fn size_of_syllable() {
+        let size = std::mem::size_of::<Syllable>();
+        assert_eq!(4, size);
     }
 }

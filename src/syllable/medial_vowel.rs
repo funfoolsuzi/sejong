@@ -1,6 +1,6 @@
 use super::Byte;
 
-#[derive(Clone, Copy, PartialEq)]
+#[derive(Clone, Copy, PartialEq, Debug)]
 #[repr(u8)]
 pub (crate) enum MedialVowel {
     A, // ㅏ
@@ -52,6 +52,16 @@ impl From<Byte> for MedialVowel {
 impl Default for MedialVowel {
     fn default() -> Self {
         Self::A
+    }
+}
+
+impl Into<char> for MedialVowel {
+    fn into(self) -> char {
+        assert!(self != Self::Invalid);
+        unsafe {
+            let x = std::char::from_u32_unchecked(self as u32 + 0x314f);
+            x
+        }
     }
 }
 
