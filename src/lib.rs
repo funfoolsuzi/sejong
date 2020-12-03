@@ -1,10 +1,9 @@
-
 mod buffer;
-mod syllable;
 mod byte;
+mod syllable;
 
-pub use byte::Byte;
 pub use buffer::Buffer;
+pub use byte::Byte;
 
 pub fn default() -> Buffer {
     Buffer::default()

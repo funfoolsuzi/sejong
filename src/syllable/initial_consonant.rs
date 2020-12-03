@@ -1,29 +1,28 @@
-
 use super::{Byte, FinalConsonant};
 use std::convert::TryFrom;
 
 #[derive(Clone, Copy, PartialEq, Debug)]
 #[repr(u8)]
-pub (crate) enum InitialConsonant {
-    G, // ㄱ
+pub(crate) enum InitialConsonant {
+    G,  // ㄱ
     KK, // ㄲ
-    N, // ㄴ
-    D, // ㄷ
+    N,  // ㄴ
+    D,  // ㄷ
     TT, // ㄸ
-    R, // ㄹ
-    M, // ㅁ
-    B, // ㅂ
+    R,  // ㄹ
+    M,  // ㅁ
+    B,  // ㅂ
     PP, // ㅃ
-    S, // ㅅ
+    S,  // ㅅ
     SS, // ㅆ
     NG, // ㅇ
-    J, // ㅈ
+    J,  // ㅈ
     JJ, // ㅉ
     CH, // ㅊ
-    K, // ㅋ
-    T, // ㅌ
-    P, // ㅍ
-    H, // ㅎ
+    K,  // ㅋ
+    T,  // ㅌ
+    P,  // ㅍ
+    H,  // ㅎ
 }
 
 impl TryFrom<Byte> for InitialConsonant {
@@ -92,7 +91,7 @@ impl Into<char> for InitialConsonant {
             Self::R => 'ㄹ',
             Self::M => 'ㅁ',
             Self::B => 'ㅂ',
-            Self::PP => 'ㅃ', 
+            Self::PP => 'ㅃ',
             Self::S => 'ㅅ',
             Self::SS => 'ㅆ',
             Self::NG => 'ㅇ',

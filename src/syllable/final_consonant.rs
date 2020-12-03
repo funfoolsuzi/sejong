@@ -3,16 +3,16 @@ use std::convert::{TryFrom, TryInto};
 
 #[derive(Clone, Copy, PartialEq, Debug)]
 #[repr(u8)]
-pub (crate) enum FinalConsonant {
+pub(crate) enum FinalConsonant {
     None,
-    G, // ㄱ
+    G,  // ㄱ
     KK, // ㄲ
     GS, // ㄳ
-    N, // ㄴ
+    N,  // ㄴ
     NJ, // ㄵ
     NH, // ㄶ
-    D, // ㄷ
-    L, // ㄹ
+    D,  // ㄷ
+    L,  // ㄹ
     LG, // ㄺ
     LM, // ㄻ
     LB, // ㄼ
@@ -20,18 +20,18 @@ pub (crate) enum FinalConsonant {
     LT, // ㄾ
     LP, // ㄿ
     LH, // ㅀ
-    M, // ㅁ
-    B, // ㅂ
+    M,  // ㅁ
+    B,  // ㅂ
     BS, // ㅄ
-    S, // ㅅ
+    S,  // ㅅ
     SS, // ㅆ
     NG, // ㅇ
-    J, // ㅈ
+    J,  // ㅈ
     CH, // ㅊ
-    K, // ㅋ
-    T, // ㅌ
-    P, // ㅍ
-    H, // ㅎ
+    K,  // ㅋ
+    T,  // ㅌ
+    P,  // ㅍ
+    H,  // ㅎ
 }
 
 impl TryFrom<Byte> for FinalConsonant {
@@ -63,38 +63,30 @@ impl TryFrom<(Self, Byte)> for FinalConsonant {
     type Error = (Self, Byte);
     fn try_from(input: (Self, Byte)) -> Result<Self, Self::Error> {
         match input.0 {
-            Self::G => {
-                match input.1 {
-                    Byte::S => Ok(Self::GS),
-                    _ => Err(input),
-                }
+            Self::G => match input.1 {
+                Byte::S => Ok(Self::GS),
+                _ => Err(input),
             },
-            Self::N => {
-                match input.1 {
-                    Byte::J => Ok(Self::NJ),
-                    Byte::H => Ok(Self::NH),
-                    _ => Err(input),
-                }
+            Self::N => match input.1 {
+                Byte::J => Ok(Self::NJ),
+                Byte::H => Ok(Self::NH),
+                _ => Err(input),
             },
-            Self::L => {
-                match input.1 {
-                    Byte::G => Ok(Self::LG),
-                    Byte::M => Ok(Self::LM),
-                    Byte::B => Ok(Self::LB),
-                    Byte::S => Ok(Self::LS),
-                    Byte::T => Ok(Self::LT),
-                    Byte::P => Ok(Self::LP),
-                    Byte::H => Ok(Self::LH),
-                    _ => Err(input),
-                }
+            Self::L => match input.1 {
+                Byte::G => Ok(Self::LG),
+                Byte::M => Ok(Self::LM),
+                Byte::B => Ok(Self::LB),
+                Byte::S => Ok(Self::LS),
+                Byte::T => Ok(Self::LT),
+                Byte::P => Ok(Self::LP),
+                Byte::H => Ok(Self::LH),
+                _ => Err(input),
             },
-            Self::B => {
-                match input.1 {
-                    Byte::S => Ok(Self::BS),
-                    _ => Err(input),
-                }
-            }
-            _ => Err(input)
+            Self::B => match input.1 {
+                Byte::S => Ok(Self::BS),
+                _ => Err(input),
+            },
+            _ => Err(input),
         }
     }
 }
