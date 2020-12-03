@@ -1,5 +1,5 @@
-use crate::syllable::Syllable;
 use crate::byte::Byte;
+use crate::syllable::Syllable;
 use std::convert::TryInto;
 
 const DEFAULT_BUFFER_CAP: usize = 100;
@@ -12,12 +12,15 @@ impl Buffer {
         Self(Vec::with_capacity(cap))
     }
 
-    pub fn put<T>(&mut self, byte_candidate: T) -> Option<T> where T:TryInto<Byte, Error = T> {
+    pub fn put<T>(&mut self, byte_candidate: T) -> Option<T>
+    where
+        T: TryInto<Byte, Error = T>,
+    {
         match byte_candidate.try_into() {
             Ok(byte) => {
                 self.put_byte(byte);
                 None
-            },
+            }
             Err(returned) => Some(returned),
         }
     }
@@ -44,23 +47,17 @@ impl Buffer {
 
     fn put_byte(&mut self, b: Byte) {
         if let Some(last) = self.0.last_mut() {
-            match last.put(b) {
-                Some(b) => {
-                    match last.try_split_with_vowel(b) {
-                        Ok(new_syl) => {
-                            self.0.push(new_syl);
-                            return
-                        },
-                        _ => {}
-                    }
-                },
-                _ => return,
-            };
+            if let Some(b) = last.put(b) {
+                if let Ok(new_syl) = last.try_split_with_vowel(b) {
+                    self.0.push(new_syl);
+                    return;
+                }
+            } else {
+                return;
+            }
         }
 
-        if let Some(syl) = Syllable::new(b) {
-            self.0.push(syl);
-        }
+        self.0.push(b.into());
     }
 }
 
@@ -136,7 +133,6 @@ mod tests {
 
         assert_eq!("ㄴㅈ", buffer.to_string());
     }
-
 
     #[test]
     fn test_syllable_with_four_jamol() {

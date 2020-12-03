@@ -1,79 +1,61 @@
-
 use super::*;
-use std::convert::{TryInto, TryFrom};
+use std::convert::{TryFrom, TryInto};
 
 #[derive(Clone, Copy, Debug)]
-pub (crate) enum Syllable {
+pub(crate) enum Syllable {
     Initial(InitialConsonant),
     Medial(InitialConsonant, MedialVowel),
     Final(InitialConsonant, MedialVowel, FinalConsonant),
     VowelOnly(MedialVowel),
-    FinalConsonantOnly(FinalConsonant),
 }
 
 impl Syllable {
-    pub fn new(byte: Byte) -> Option<Self> {
-        if let Ok(ic) = InitialConsonant::try_from(byte) {
-            return Some(Self::Initial(ic))
+    pub fn put(&mut self, byte: Byte) -> Option<Byte> {
+        if let Some(new) = self.update(byte) {
+            *self = new;
+            None
+        } else {
+            Some(byte)
         }
-        if let Ok(vo) = MedialVowel::try_from(byte) {
-            return Some(Self::VowelOnly(vo))
+    }
+    pub fn try_split_with_vowel(&mut self, byte: Byte) -> Result<Self, Byte> {
+        if !byte.is_vowel() {
+            return Err(byte);
         }
-        if let Ok(fc) = FinalConsonant::try_from(byte) {
-            return Some(Self::FinalConsonantOnly(fc))
+        if let Self::Final(ic, mv, fc) = self {
+            if let Ok(new_ic) = InitialConsonant::try_from(*fc) {
+                let mut splitted = Self::Initial(new_ic);
+                if let Some(byte) = splitted.put(byte) {
+                    return Err(byte);
+                }
+                *self = Self::Medial(*ic, *mv);
+                Ok(splitted)
+            } else {
+                let split_result: Result<(FinalConsonant, InitialConsonant), FinalConsonant> =
+                    (*fc).try_into();
+                if let Ok(consonants) = split_result {
+                    let mut splitted = Self::Initial(consonants.1);
+                    if let Some(byte) = splitted.put(byte) {
+                        return Err(byte);
+                    }
+                    *self = Self::Final(*ic, *mv, consonants.0);
+                    Ok(splitted)
+                } else {
+                    Err(byte)
+                }
+            }
+        } else {
+            Err(byte)
         }
-        None
     }
 
-    pub fn put(&mut self, byte: Byte) -> Option<Byte> {
-        match match self {
+    fn update(&self, byte: Byte) -> Option<Self> {
+        match self {
             Self::Initial(ic) => Self::handle_initial(ic, byte),
             Self::Medial(ic, mv) => Self::handle_medial(ic, mv, byte),
             Self::Final(ic, mv, fc) => Self::handle_final(ic, mv, fc, byte),
-            Self::VowelOnly(_) | Self::FinalConsonantOnly(_) => None,
-        } {
-            Some(new) => {
-                *self = new;
-                None
-            },
-            None => Some(byte),
+            Self::VowelOnly(_) => None,
         }
-    }
-    
-    pub fn try_split_with_vowel(&mut self, byte: Byte) -> Result<Self, Byte> {
-        if !byte.is_vowel() {
-            return Err(byte)
-        }
-        match self {
-            Self::Final(ic, mv, fc) => {
-                match InitialConsonant::try_from(*fc) {
-                    Err(_) => {
-                        let result: Result<(FinalConsonant, InitialConsonant), FinalConsonant> = (*fc).try_into();
-                        match result {
-                            Ok(consonants) => {
-                                let mut splitted = Self::Initial(consonants.1);
-                                if let Some(byte) = splitted.put(byte) {
-                                    return Err(byte)
-                                }
-                                *self = Self::Final(*ic, *mv, consonants.0);
-                                Ok(splitted)
-                            },
-                            Err(_) => Err(byte),
-                        }
-                    }
-                    Ok(new_ic) => {
-                        let mut splitted = Self::Initial(new_ic);
-                        if let Some(byte) = splitted.put(byte) {
-                            return Err(byte)
-                        } 
-                        *self = Self::Medial(*ic, *mv);
-                        Ok(splitted)
-                    }
-                }
-            },
-            _ => Err(byte),
-        }
-        
     }
 
     fn handle_initial(ic: &InitialConsonant, byte: Byte) -> Option<Self> {
@@ -85,23 +67,26 @@ impl Syllable {
 
     fn handle_medial(ic: &InitialConsonant, mv: &MedialVowel, byte: Byte) -> Option<Self> {
         if let Ok(added) = MedialVowel::try_from((*mv, byte)) {
-            return Some(Self::Medial(*ic, added))
+            return Some(Self::Medial(*ic, added));
         }
         match FinalConsonant::try_from(byte) {
             Ok(fc) => Some(Self::Final(*ic, *mv, fc)),
             Err(_) => None,
         }
-        
     }
 
-    fn handle_final(ic: &InitialConsonant, mv: &MedialVowel, fc: &FinalConsonant, byte: Byte) -> Option<Self> {
+    fn handle_final(
+        ic: &InitialConsonant,
+        mv: &MedialVowel,
+        fc: &FinalConsonant,
+        byte: Byte,
+    ) -> Option<Self> {
         match FinalConsonant::try_from((*fc, byte)) {
             Ok(new) => Some(Self::Final(*ic, *mv, new)),
             Err(_) => None,
         }
     }
 }
-
 
 impl Into<char> for Syllable {
     fn into(self) -> char {
@@ -110,16 +95,27 @@ impl Into<char> for Syllable {
             Self::Medial(ic, mv) => calculate_syllable_u32(ic as u32, mv as u32, 0),
             Self::Final(ic, mv, fc) => calculate_syllable_u32(ic as u32, mv as u32, fc as u32),
             Self::VowelOnly(v) => v.into(),
-            _ => '\0', // TODO: needs to handle other case
         }
     }
 }
 
-// the formula comes from this Wikipedia page: 
+// the formula comes from this Wikipedia page:
 // https://en.wikipedia.org/wiki/Korean_language_and_computers#Hangul_Syllables_block
 fn calculate_syllable_u32(initial_consonant: u32, medial_vowel: u32, final_consonant: u32) -> char {
     unsafe {
-        std::char::from_u32_unchecked(initial_consonant * 588 + medial_vowel * 28 + final_consonant + 44032)
+        std::char::from_u32_unchecked(
+            initial_consonant * 588 + medial_vowel * 28 + final_consonant + 44032,
+        )
+    }
+}
+
+impl From<Byte> for Syllable {
+    fn from(b: Byte) -> Self {
+        if b.is_consonant() {
+            Self::Initial(InitialConsonant::try_from(b).unwrap())
+        } else {
+            Self::VowelOnly(MedialVowel::try_from(b).unwrap())
+        }
     }
 }
 
@@ -129,10 +125,9 @@ mod tests {
 
     #[test]
     fn test_into_char() {
-        let mut syllable1 = Syllable::new(Byte::M).unwrap();
+        let mut syllable1 = Syllable::from(Byte::M);
         syllable1.put(Byte::A);
         syllable1.put(Byte::N);
-        
         let char1: char = syllable1.into();
         assert_eq!(char1, '만');
     }
@@ -141,5 +136,48 @@ mod tests {
     fn size_of_syllable() {
         let size = std::mem::size_of::<Syllable>();
         assert_eq!(4, size);
+    }
+
+    #[test]
+    fn guard_from_byte() {
+        let pairs = vec![
+            (Byte::TT, 'ㄸ'),
+            (Byte::YAE, 'ㅒ'),
+            (Byte::YE, 'ㅖ'),
+            (Byte::PP, 'ㅃ'),
+            (Byte::KK, 'ㄲ'),
+            (Byte::SS, 'ㅆ'),
+            (Byte::JJ, 'ㅉ'),
+            (Byte::M, 'ㅁ'),
+            (Byte::YU, 'ㅠ'),
+            (Byte::CH, 'ㅊ'),
+            (Byte::NG, 'ㅇ'),
+            (Byte::D, 'ㄷ'),
+            (Byte::R, 'ㄹ'),
+            (Byte::H, 'ㅎ'),
+            (Byte::O, 'ㅗ'),
+            (Byte::YA, 'ㅑ'),
+            (Byte::EO, 'ㅓ'),
+            (Byte::A, 'ㅏ'),
+            (Byte::I, 'ㅣ'),
+            (Byte::EU, 'ㅡ'),
+            (Byte::U, 'ㅜ'),
+            (Byte::AE, 'ㅐ'),
+            (Byte::E, 'ㅔ'),
+            (Byte::B, 'ㅂ'),
+            (Byte::G, 'ㄱ'),
+            (Byte::N, 'ㄴ'),
+            (Byte::S, 'ㅅ'),
+            (Byte::YEO, 'ㅕ'),
+            (Byte::P, 'ㅍ'),
+            (Byte::J, 'ㅈ'),
+            (Byte::T, 'ㅌ'),
+            (Byte::YO, 'ㅛ'),
+            (Byte::K, 'ㅋ'),
+        ];
+        for pair in pairs {
+            let c: char = Syllable::from(pair.0).into();
+            assert_eq!(c, pair.1)
+        }
     }
 }
