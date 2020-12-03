@@ -89,3 +89,14 @@ impl TryFrom<(Self, Byte)> for MedialVowel {
         }
     }
 }
+
+impl MedialVowel {
+    pub fn try_remove_second_half(self) -> Option<Self> {
+        match self {
+            Self::WA | Self::WAE | Self::OE => Some(Self::O),
+            Self::WO | Self::WE | Self::WI => Some(Self::U),
+            Self::YI => Some(Self::EU),
+            _ => None,
+        }
+    }
+}

@@ -116,3 +116,17 @@ impl TryInto<(Self, InitialConsonant)> for FinalConsonant {
         }
     }
 }
+
+impl FinalConsonant {
+    pub fn try_remove_second_half(self) -> Option<Self> {
+        match self {
+            Self::GS => Some(Self::G),
+            Self::NJ | Self::NH => Some(Self::N),
+            Self::LG | Self::LM | Self::LB | Self::LS | Self::LT | Self::LP | Self::LH => {
+                Some(Self::L)
+            }
+            Self::BS => Some(Self::B),
+            _ => None,
+        }
+    }
+}

@@ -25,6 +25,14 @@ impl Buffer {
         }
     }
 
+    pub fn remove_last(&mut self) -> Option<()> {
+        if let Some(last) = self.0.last_mut() {
+            last.remove_last().or_else(|| self.0.pop().and(Some(())))
+        } else {
+            None
+        }
+    }
+
     pub fn out(&mut self) -> String {
         let mut result = String::with_capacity(self.0.len());
         self.0.reverse();
@@ -161,5 +169,31 @@ mod tests {
         buffer.put(Byte::J as u8);
 
         assert_eq!("은즍", buffer.to_string())
+    }
+
+    #[test]
+    fn test_pop() {
+        let mut buffer = Buffer::default();
+        assert!(buffer.remove_last().is_none());
+
+        buffer.put(Byte::NG as u8);
+        buffer.put(Byte::EU as u8);
+        buffer.put(Byte::N as u8);
+        buffer.put(Byte::J as u8);
+        buffer.put(Byte::EU as u8);
+        buffer.put(Byte::N as u8);
+        buffer.put(Byte::J as u8);
+
+        assert_eq!("은즍", buffer.to_string());
+
+        assert!(buffer.remove_last().is_some());
+        assert_eq!("은즌", buffer.to_string());
+        assert!(buffer.remove_last().is_some());
+        assert_eq!("은즈", buffer.to_string());
+        assert!(buffer.remove_last().is_some());
+        assert!(buffer.remove_last().is_some());
+        assert_eq!("은", buffer.to_string());
+        assert!(buffer.remove_last().is_some());
+        assert_eq!("으", buffer.to_string());
     }
 }

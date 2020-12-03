@@ -49,6 +49,26 @@ impl Syllable {
         }
     }
 
+    pub fn remove_last(&mut self) -> Option<()> {
+        match match self {
+            Self::Medial(ic, mv) => match mv.try_remove_second_half() {
+                Some(new_mv) => Some(Self::Medial(*ic, new_mv)),
+                None => Some(Self::Initial(*ic)),
+            },
+            Self::Final(ic, mv, fc) => match fc.try_remove_second_half() {
+                Some(new_fc) => Some(Self::Final(*ic, *mv, new_fc)),
+                None => Some(Self::Medial(*ic, *mv)),
+            },
+            _ => None,
+        } {
+            Some(new) => {
+                *self = new;
+                Some(())
+            }
+            _ => None,
+        }
+    }
+
     fn update(&self, byte: Byte) -> Option<Self> {
         match self {
             Self::Initial(ic) => Self::handle_initial(ic, byte),
