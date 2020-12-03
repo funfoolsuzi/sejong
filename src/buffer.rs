@@ -1,9 +1,11 @@
+use wasm_bindgen::prelude::wasm_bindgen;
 use crate::byte::Byte;
 use crate::syllable::Syllable;
 use std::convert::TryInto;
 
 const DEFAULT_BUFFER_CAP: usize = 100;
 
+#[wasm_bindgen]
 #[derive(Clone)]
 pub struct Buffer(Vec<Syllable>);
 
