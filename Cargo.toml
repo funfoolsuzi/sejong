@@ -4,13 +4,17 @@ version = "0.1.0"
 authors = ["Xiwen Li"]
 edition = "2018"
 
+[package.metadata.wasm-pack.profile.release]
+wasm-opt = false
+
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [lib]
 crate-type = ["cdylib", "rlib"]
 
 [features]
-wasm = ["wasm-bindgen"]
+wasm = ["wasm-bindgen", "lazy_static"]
 
 [dependencies]
 wasm-bindgen = { version = "*", optional = true}
+lazy_static = { version = "*", optional = true}

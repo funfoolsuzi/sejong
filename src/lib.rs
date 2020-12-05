@@ -7,12 +7,32 @@ mod syllable;
 pub use buffer::Buffer;
 pub use byte::Byte;
 
-#[cfg_attr(feature = "wasm", wasm_bindgen)]
-pub fn default() -> Buffer {
-    Buffer::default()
+#[cfg(feature = "wasm")]
+#[macro_use]
+extern crate lazy_static;
+
+#[cfg(feature = "wasm")]
+lazy_static! {
+    static ref BUFFER: std::sync::Mutex<Buffer> = std::sync::Mutex::new(Buffer::default());
 }
 
 #[cfg_attr(feature = "wasm", wasm_bindgen)]
-pub fn with_capacity(cap: usize) -> Buffer {
-    Buffer::with_capacity(cap)
+pub fn put(c: char) -> Option<String> {
+    let mut b = BUFFER.lock().unwrap();
+    match b.put(c) {
+        None => Some(b.to_string()),
+        _ => None,
+    }
+}
+
+#[cfg_attr(feature = "wasm", wasm_bindgen)]
+pub fn pop() -> Option<String> {
+    let mut b = BUFFER.lock().unwrap();
+    b.remove_last().map(|_| b.to_string())
+}
+
+#[cfg_attr(feature = "wasm", wasm_bindgen)]
+pub fn out() -> String {
+    let mut b = BUFFER.lock().unwrap();
+    b.out()
 }
