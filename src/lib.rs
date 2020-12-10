@@ -16,6 +16,7 @@ lazy_static! {
     static ref BUFFER: std::sync::Mutex<Buffer> = std::sync::Mutex::new(Buffer::default());
 }
 
+#[cfg(feature = "wasm")]
 #[cfg_attr(feature = "wasm", wasm_bindgen)]
 pub fn put(c: char) -> Option<String> {
     let mut b = BUFFER.lock().unwrap();
@@ -25,12 +26,14 @@ pub fn put(c: char) -> Option<String> {
     }
 }
 
+#[cfg(feature = "wasm")]
 #[cfg_attr(feature = "wasm", wasm_bindgen)]
 pub fn pop() -> Option<String> {
     let mut b = BUFFER.lock().unwrap();
     b.remove_last().map(|_| b.to_string())
 }
 
+#[cfg(feature = "wasm")]
 #[cfg_attr(feature = "wasm", wasm_bindgen)]
 pub fn out() -> String {
     let mut b = BUFFER.lock().unwrap();
