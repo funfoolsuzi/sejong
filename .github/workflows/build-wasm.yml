@@ -1,0 +1,22 @@
+name: Rust
+
+on:
+  push:
+    branches: [ main ]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: wasm-pack-action
+      uses: jetli/wasm-pack-action@v0.3.0
+    - name: Run tests
+      run: cargo test --verbose
+    - name: Build
+      run: wasm-pack build -- --features wasm
