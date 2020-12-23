@@ -1,8 +1,13 @@
 [package]
 name = "sejong"
 version = "0.1.0"
-authors = ["Xiwen Li"]
+authors = ["Xiwen Li<funfoolsuzi@gmail.com>"]
 edition = "2018"
+license = "MIT"
+keywords = ["hangul", "korean", "input"]
+categories = ["text-processing", "parsing", "localization"]
+description = "Sejong Buffer is a buffer that can receive ASCII bytes different from keyboard and send out UTF-32 Hangul string. This buffer allows deletion by Jamo."
+repository = "https://github.com/funfoolsuzi/sejong.git"
 
 [package.metadata.wasm-pack.profile.release]
 wasm-opt = false
