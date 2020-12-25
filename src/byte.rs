@@ -1,41 +1,78 @@
 use std::convert::TryFrom;
 
+/// This is the intermediate representation of the Buffer input.
+/// Its `TryFrom` implementations also act as input validators.
+/// Any input that is successfully converted to `Byte` is a valid
+/// modern Hangul Jamo.
 #[derive(Clone, Copy, Debug)]
 #[repr(u8)]
 pub enum Byte {
-    TT = 0x45,  // E
-    YAE = 0x4f, // O
-    YE,         // P
-    PP,         // Q
-    KK = 0x52,  // R
-    SS = 0x54,  // T
-    JJ = 0x57,  // W
-    M = 0x61,   // a
-    YU,         // b
-    CH,         // c
-    NG,         // d
-    D,          // e
-    R,          // f
-    H,          // g
-    O,          // h
-    YA,         // i
-    EO,         // j
-    A,          // k
-    I,          // l
-    EU,         // m
-    U,          // n
-    AE,         // o
-    E,          // p
-    B,          // q
-    G,          // r
-    N,          // s
-    S,          // t
-    YEO,        // u
-    P,          // v
-    J,          // w
-    T,          // x
-    YO,         // y
-    K = 0x7a,   // z
+    /// E
+    TT = 0x45,
+    /// O
+    YAE = 0x4f,
+    /// P
+    YE,
+    /// Q
+    PP,
+    /// R
+    KK = 0x52,
+    /// T
+    SS = 0x54,
+    /// W
+    JJ = 0x57,
+    /// a
+    M = 0x61,
+    /// b
+    YU,
+    /// c
+    CH,
+    /// d
+    NG,
+    /// e
+    D,
+    /// f
+    R,
+    /// g
+    H,
+    /// h
+    O,
+    /// i
+    YA,
+    /// j
+    EO,
+    /// k
+    A,
+    /// l
+    I,
+    /// m
+    EU,
+    /// n
+    U,
+    /// o
+    AE,
+    /// p
+    E,
+    /// q
+    B,
+    /// r
+    G,
+    /// s
+    N,
+    /// t
+    S,
+    /// u
+    YEO,
+    /// v
+    P,
+    /// w
+    J,
+    /// x
+    T,
+    /// y
+    YO,
+    /// z
+    K = 0x7a,
 }
 
 impl TryFrom<u8> for Byte {

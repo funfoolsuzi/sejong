@@ -1,3 +1,10 @@
+
+//! Sejong [`Buffer`] takes English letters([`Byte`]) that appears on standard
+//! keyboard and convert them to corresponding Hangul Jamos as
+//! in standard Korean 2-set keyboard. It can output complete Hangul
+//! Syllables as a UTF-32 string. It also allows deletion by Hangul
+//! Jamo.
+
 #[cfg(feature = "wasm")]
 use wasm_bindgen::prelude::wasm_bindgen;
 
@@ -16,6 +23,9 @@ lazy_static! {
     static ref BUFFER: std::sync::Mutex<Buffer> = std::sync::Mutex::new(Buffer::default());
 }
 
+/// This is a simple wrapper for [`Buffer::put`]. 
+/// When used as a WASM module, this lib instantiate a global
+/// [`Buffer`] and this method is using the global instance.
 #[cfg(feature = "wasm")]
 #[cfg_attr(feature = "wasm", wasm_bindgen)]
 pub fn put(c: char) -> Option<String> {
@@ -26,13 +36,19 @@ pub fn put(c: char) -> Option<String> {
     }
 }
 
+/// This is a simple wrapper for [`Buffer::pop`]. 
+/// When used as a WASM module, this lib instantiate a global
+/// [`Buffer`] and this method is using the global instance.
 #[cfg(feature = "wasm")]
 #[cfg_attr(feature = "wasm", wasm_bindgen)]
 pub fn pop() -> Option<String> {
     let mut b = BUFFER.lock().unwrap();
-    b.remove_last().map(|_| b.to_string())
+    b.pop().map(|_| b.to_string())
 }
 
+/// This is a simple wrapper for [`Buffer::out`]. 
+/// When used as a WASM module, this lib instantiate a global
+/// [`Buffer`] and this method is using the global instance.
 #[cfg(feature = "wasm")]
 #[cfg_attr(feature = "wasm", wasm_bindgen)]
 pub fn out() -> String {
