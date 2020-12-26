@@ -1,6 +1,6 @@
 [package]
 name = "sejong"
-version = "0.1.1"
+version = "0.1.2"
 authors = ["Xiwen Li<funfoolsuzi@gmail.com>"]
 edition = "2018"
 license = "MIT"

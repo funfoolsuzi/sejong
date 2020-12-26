@@ -8,6 +8,30 @@ Sejong Buffer is a buffer that receives ASCII bytes from standard English keyboa
 
 This rust library can be compiled as a WASM library or as part of another rust program.
 
+# USE
+
+## WASM NPM PACKAGE
+
+```js
+import('sejong').then(buffer => {
+    buffer.put('d');
+    buffer.put('k');
+    buffer.put('s');
+    buffer.put('s');
+    buffer.put('u');
+    buffer.put('d');
+
+    assert(buffer.to_string() === '안녕');
+
+    buffer.put('s');
+    assert(buffer.to_string() === '안녕ㄴ');
+
+    buffer.pop();
+    assert(buffer.out() === '안녕');
+    assert(buffer.out() === '');
+});
+```
+
 # BUILD
 
 ## WASM
@@ -20,7 +44,3 @@ This rust library can be compiled as a WASM library or as part of another rust p
 ## rust lib
 
 No additional step. Just use as regular rust library.
-
-# USE
-
-

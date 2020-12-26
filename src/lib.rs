@@ -26,7 +26,7 @@ lazy_static! {
 /// This is a simple wrapper for [`Buffer::put`]. 
 /// When used as a WASM module, this lib instantiate a global
 /// [`Buffer`] and this method is using the global instance.
-#[cfg(feature = "wasm")]
+#[cfg(any(feature = "wasm", doc))]
 #[cfg_attr(feature = "wasm", wasm_bindgen)]
 pub fn put(c: char) -> Option<String> {
     let mut b = BUFFER.lock().unwrap();
@@ -39,7 +39,7 @@ pub fn put(c: char) -> Option<String> {
 /// This is a simple wrapper for [`Buffer::pop`]. 
 /// When used as a WASM module, this lib instantiate a global
 /// [`Buffer`] and this method is using the global instance.
-#[cfg(feature = "wasm")]
+#[cfg(any(feature = "wasm", doc))]
 #[cfg_attr(feature = "wasm", wasm_bindgen)]
 pub fn pop() -> Option<String> {
     let mut b = BUFFER.lock().unwrap();
@@ -49,7 +49,7 @@ pub fn pop() -> Option<String> {
 /// This is a simple wrapper for [`Buffer::out`]. 
 /// When used as a WASM module, this lib instantiate a global
 /// [`Buffer`] and this method is using the global instance.
-#[cfg(feature = "wasm")]
+#[cfg(any(feature = "wasm", doc))]
 #[cfg_attr(feature = "wasm", wasm_bindgen)]
 pub fn out() -> String {
     let mut b = BUFFER.lock().unwrap();
