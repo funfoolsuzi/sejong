@@ -4,6 +4,27 @@
 //! in standard Korean 2-set keyboard. It can output complete Hangul
 //! Syllables as a UTF-32 string. It also allows deletion by Hangul
 //! Jamo.
+//! 
+//! # Example
+//! ```
+//! use sejong::{Buffer, Byte};
+//! let mut buf = Buffer::default();
+//! buf.put(Byte::NG as u8);
+//! buf.put(Byte::A as u8);
+//! buf.put(Byte::N as u8);
+//! buf.put(Byte::N as u8);
+//! buf.put(Byte::YEO as u8);
+//! buf.put(Byte::NG as u8);
+//! 
+//! assert_eq!(buf.to_string(), "안녕");
+//! 
+//! buf.put(Byte::N as u8);
+//! assert_eq!(buf.to_string(), "안녕ㄴ");
+//! 
+//! buf.pop();
+//! assert_eq!(buf.out(), "안녕");
+//! assert_eq!(buf.out(), "");
+//! ```
 
 #[cfg(feature = "wasm")]
 use wasm_bindgen::prelude::wasm_bindgen;
