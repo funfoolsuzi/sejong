@@ -18,8 +18,9 @@ wasm-opt = false
 crate-type = ["cdylib", "rlib"]
 
 [features]
-wasm = ["wasm-bindgen", "lazy_static"]
+wasm = ["wasm-bindgen", "lazy_static", "wee_alloc"]
 
 [dependencies]
 wasm-bindgen = { version = "0.2", optional = true}
 lazy_static = { version = "1.4", optional = true}
+wee_alloc = { version = "0.4", optional = true}

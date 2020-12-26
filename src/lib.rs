@@ -43,6 +43,9 @@ extern crate lazy_static;
 lazy_static! {
     static ref BUFFER: std::sync::Mutex<Buffer> = std::sync::Mutex::new(Buffer::default());
 }
+#[cfg(feature = "wasm")]
+#[global_allocator]
+static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
 
 /// This is a simple wrapper for [`Buffer::put`]. 
 /// When used as a WASM module, this lib instantiate a global
