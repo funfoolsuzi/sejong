@@ -11,7 +11,9 @@ This rust library can be compiled as a WASM library or as part of another rust p
 
 # USE
 
-## To use as a NPM package
+## To use as an NPM package
+
+__Do NOT run in a node app, this package can only run in browser__
 
 Install: `npm install sejong-buffer`
 
