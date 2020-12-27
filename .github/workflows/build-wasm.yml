@@ -38,6 +38,7 @@ jobs:
         wasm-pack build --release --out-dir $GITHUB_WORKSPACE/wasm -- --features wasm
     - name: Update wasm
       run: |
+        gh auth login
         cd $GITHUB_WORKSPACE/wasm
         date > generated.txt
         git config user.name github-actions
