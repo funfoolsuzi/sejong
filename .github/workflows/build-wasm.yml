@@ -21,11 +21,13 @@ jobs:
     - name: wasm-pack-action
       uses: jetli/wasm-pack-action@v0.3.0
     - name: Run tests
-      run: cargo test --verbose
-      working-directory: $GITHUB_WORKSPACE/main
+      run: |
+        cd $GITHUB_WORKSPACE/main
+        cargo test --verbose
     - name: Build
-      run: wasm-pack build --release --out-dir $GITHUB_WORKSPACE/wasm -- --features wasm
-      working-directory: $GITHUB_WORKSPACE/main
+      run: |
+        wasm-pack build --release --out-dir $GITHUB_WORKSPACE/wasm -- --features wasm
+      working-directory: main
     - uses: peter-evans/create-pull-request@v3
       with:
         token: $GITHUB_TOKEN
