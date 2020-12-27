@@ -22,7 +22,7 @@ jobs:
     - run: |
         git remote get-url origin
         cargo test --verbose
-        working-directory: main
+      working-directory: main
     - run: wasm-pack build --release --out-dir $GITHUB_WORKSPACE/wasm -- --features wasm
       working-directory: main
     - run: |
