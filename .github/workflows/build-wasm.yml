@@ -26,14 +26,12 @@ jobs:
     - name: Build
       run: wasm-pack build --release --out-dir $GITHUB_WORKSPACE/wasm -- --features wasm
       working-directory: main
-    - name: Commit
+    - name: Pre-Commit
       run: |
         rm .gitignore
         date > generated.txt
         git config user.name github-actions
         git config user.email github-actions@github.com
-        git add .
-        git commit -m "generated"
       working-directory: wasm
     - uses: peter-evans/create-pull-request@v3
       with:
