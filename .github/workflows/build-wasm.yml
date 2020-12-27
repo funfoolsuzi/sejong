@@ -20,9 +20,9 @@ jobs:
         path: wasm 
     - uses: jetli/wasm-pack-action@v0.3.0
     - run: |
-      git remote get-url origin
-      cargo test --verbose
-      working-directory: main
+        git remote get-url origin
+        cargo test --verbose
+        working-directory: main
     - run: wasm-pack build --release --out-dir $GITHUB_WORKSPACE/wasm -- --features wasm
       working-directory: main
     - run: |
