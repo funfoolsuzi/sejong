@@ -27,8 +27,8 @@ jobs:
         ls -R
     - name: Run tests
       run: |
-      cd $GITHUB_WORKSPACE/sejong
-      cargo test --verbose
+        cd $GITHUB_WORKSPACE/sejong
+        cargo test --verbose
     - name: Build
       run: wasm-pack build --release --out-dir $GITHUB_WORKSPACE/wasm -- --features wasm
     - name: Update wasm
