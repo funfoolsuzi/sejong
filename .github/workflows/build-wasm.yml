@@ -15,10 +15,20 @@ jobs:
       with:
         repository: funfoolsuzi/sejong-wasm
         path: wasm
+    - name: Print1
+      run: |
+      pwd
+      ls -R
     - name: wasm-pack-action
       uses: jetli/wasm-pack-action@v0.3.0
+    - name: Print2
+      run: |
+      pwd
+      ls -R
     - name: Run tests
-      run: cargo test --verbose
+      run: |
+      cd $GITHUB_WORKSPACE/sejong
+      cargo test --verbose
     - name: Build
       run: wasm-pack build --release --out-dir $GITHUB_WORKSPACE/wasm -- --features wasm
     - name: Update wasm
