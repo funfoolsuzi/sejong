@@ -17,14 +17,14 @@ jobs:
         path: wasm
     - name: Print1
       run: |
-      pwd
-      ls -R
+        pwd
+        ls -R
     - name: wasm-pack-action
       uses: jetli/wasm-pack-action@v0.3.0
     - name: Print2
       run: |
-      pwd
-      ls -R
+        pwd
+        ls -R
     - name: Run tests
       run: |
       cd $GITHUB_WORKSPACE/sejong
