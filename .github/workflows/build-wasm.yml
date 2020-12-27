@@ -35,5 +35,6 @@ jobs:
       working-directory: wasm
     - uses: peter-evans/create-pull-request@v3
       with:
+        token: $GITHUB_TOKEN
         path: wasm
 
