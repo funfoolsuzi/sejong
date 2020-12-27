@@ -18,20 +18,16 @@ jobs:
       with:
         repository: funfoolsuzi/sejong-wasm
         path: wasm 
-    - name: wasm-pack-action
-      uses: jetli/wasm-pack-action@v0.3.0
-    - name: Run tests
-      run: cargo test --verbose
+    - uses: jetli/wasm-pack-action@v0.3.0
+    - run: cargo test --verbose
       working-directory: main
-    - name: Build
-      run: wasm-pack build --release --out-dir $GITHUB_WORKSPACE/wasm -- --features wasm
+    - run: wasm-pack build --release --out-dir $GITHUB_WORKSPACE/wasm -- --features wasm
       working-directory: main
-    - name: Pre-Commit
-      run: |
+    - run: |
         rm .gitignore
         date > generated.txt
-        git config user.name github-actions
-        git config user.email github-actions@github.com
+        git status
+        git remote add origin https://funfoolsuzi:$GITHUB_TOKEN@github.com/funfoolsuzi/sejong-wasm.git
       working-directory: wasm
     - uses: peter-evans/create-pull-request@v3
       with:
