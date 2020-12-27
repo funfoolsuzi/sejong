@@ -8,7 +8,7 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  build:
+  build_wasm:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -33,7 +33,9 @@ jobs:
         cd $GITHUB_WORKSPACE/main
         cargo test --verbose
     - name: Build
-      run: wasm-pack build --release --out-dir $GITHUB_WORKSPACE/wasm -- --features wasm
+      run: |
+        cd $GITHUB_WORKSPACE/main
+        wasm-pack build --release --out-dir $GITHUB_WORKSPACE/wasm -- --features wasm
     - name: Update wasm
       run: |
         cd $GITHUB_WORKSPACE/wasm
