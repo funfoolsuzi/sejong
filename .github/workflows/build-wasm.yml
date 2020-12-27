@@ -13,8 +13,11 @@ jobs:
     steps:
     - uses: actions/checkout@v2
       with:
+        path: main
+    - uses: actions/checkout@v2
+      with:
         repository: funfoolsuzi/sejong-wasm
-        path: wasm
+        path: wasm 
     - name: Print1
       run: |
         pwd
@@ -27,7 +30,7 @@ jobs:
         ls -R
     - name: Run tests
       run: |
-        cd $GITHUB_WORKSPACE/sejong
+        cd $GITHUB_WORKSPACE/main
         cargo test --verbose
     - name: Build
       run: wasm-pack build --release --out-dir $GITHUB_WORKSPACE/wasm -- --features wasm
