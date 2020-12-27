@@ -18,31 +18,15 @@ jobs:
       with:
         repository: funfoolsuzi/sejong-wasm
         path: wasm 
-    - name: Print1
-      run: |
-        pwd
-        ls -R
     - name: wasm-pack-action
       uses: jetli/wasm-pack-action@v0.3.0
-    - name: Print2
-      run: |
-        pwd
-        ls -R
     - name: Run tests
-      run: |
-        cd $GITHUB_WORKSPACE/main
-        cargo test --verbose
+      run: cargo test --verbose
+      working-directory: $GITHUB_WORKSPACE/main
     - name: Build
-      run: |
-        cd $GITHUB_WORKSPACE/main
-        wasm-pack build --release --out-dir $GITHUB_WORKSPACE/wasm -- --features wasm
-    - name: Update wasm
-      run: |
-        echo $GITHUB_TOKEN | gh auth login --with-token
-        cd $GITHUB_WORKSPACE/wasm
-        date > generated.txt
-        git config user.name github-actions
-        git config user.email github-actions@github.com
-        git add .
-        git commit -m "generated"
-        gh pr create
+      run: wasm-pack build --release --out-dir $GITHUB_WORKSPACE/wasm -- --features wasm
+      working-directory: $GITHUB_WORKSPACE/main
+    - uses: peter-evans/create-pull-request@v3
+      with:
+        token: $GITHUB_TOKEN
+        
