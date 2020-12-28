@@ -25,7 +25,6 @@ jobs:
     # - run: wasm-pack build --release --out-dir $GITHUB_WORKSPACE/wasm -- --features wasm
     #   working-directory: main
     - run: |
-        rm .gitignore
         date > generated.txt
         python --version
       working-directory: wasm
