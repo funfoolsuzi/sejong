@@ -2,7 +2,7 @@ name: Update WASM
 
 on:
   push:
-    branches: [ main, funfoolsuzi-patch-1 ]
+    branches: [ main ]
 
 env:
   CARGO_TERM_COLOR: always
@@ -30,7 +30,6 @@ jobs:
     - name: Tidy generated files
       run: |
         rm .gitignore
-        date > generated.txt
         python $GITHUB_WORKSPACE/main/.github/scripts/update_package_json.py package.json
       working-directory: wasm
     - uses: peter-evans/create-pull-request@v3

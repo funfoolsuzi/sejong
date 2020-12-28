@@ -16,7 +16,7 @@ pkg = json.loads(json_str)
 pkg['name'] = 'sejong-buffer'
 if 'files' in pkg:
     del pkg['files']
-new_json_str = json.dumps(pkg)
+new_json_str = json.dumps(pkg, indent=2)
 
 with open(file_location, 'w') as f:
     f.write(new_json_str)
