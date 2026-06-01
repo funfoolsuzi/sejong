@@ -17,6 +17,10 @@ wasm-opt = false
 [lib]
 crate-type = ["cdylib", "rlib"]
 
+[[example]]
+name = "buffer_typing"
+test = false
+
 [features]
 wasm = ["wasm-bindgen", "lazy_static", "wee_alloc"]
 
