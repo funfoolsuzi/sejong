@@ -17,7 +17,7 @@ jobs:
     - uses: actions/checkout@v6
       with:
         repository: funfoolsuzi/sejong-wasm
-        token: ${{ secrets.SEJONG_WASM }}
+        persist-credentials: false
         path: wasm 
     - uses: jetli/wasm-pack-action@v0.3.0
     - name: Unit tests
