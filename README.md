@@ -63,6 +63,16 @@ assert_eq!(buf.out(), "안녕");
 assert_eq!(buf.out(), "");
 ```
 
+## Try buffer typing in a terminal
+
+```bash
+cargo run --example buffer_typing
+```
+
+Type QWERTY Korean input directly in the terminal. Enter commits the current
+buffer, Backspace removes one Jamo, Space commits a space, and Ctrl-C/Ctrl-D/Esc
+quits.
+
 # BUILD
 
 ## WASM
