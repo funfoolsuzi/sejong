@@ -68,8 +68,8 @@ fn main() -> io::Result<()> {
                 _ => {
                     let c = byte as char;
                     match buffer.put(c) {
-                        None => format!("put {c}"),
-                        Some(rejected) => format!("ignored {rejected}"),
+                        None => format!("put {}", c),
+                        Some(rejected) => format!("ignored {}", rejected),
                     }
                 }
             };
