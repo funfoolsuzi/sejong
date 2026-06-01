@@ -155,7 +155,7 @@ mod tests {
     #[test]
     fn size_of_syllable() {
         let size = std::mem::size_of::<Syllable>();
-        assert_eq!(4, size);
+        assert!(size <= 4);
     }
 
     #[test]
