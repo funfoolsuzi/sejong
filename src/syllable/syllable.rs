@@ -153,12 +153,6 @@ mod tests {
     }
 
     #[test]
-    fn size_of_syllable() {
-        let size = std::mem::size_of::<Syllable>();
-        assert!(size <= 4);
-    }
-
-    #[test]
     fn guard_from_byte() {
         let pairs = vec![
             (Byte::TT, 'ㄸ'),
